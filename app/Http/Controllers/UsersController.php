@@ -30,10 +30,14 @@ class UsersController extends Controller
         // ユーザの投稿一覧を作成日時の降順で取得
         $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
 
+        //お気に入り一覧を取得 要確認
+        $favorites = $user->favorites()->orderBy('created_at','desc')->paginate(10);
+
         // ユーザ詳細ビューでそれらを表示
         return view('users.show', [
             'user' => $user,
             'microposts' => $microposts,
+            'favorites' => $favorites,
         ]);
     }
     
