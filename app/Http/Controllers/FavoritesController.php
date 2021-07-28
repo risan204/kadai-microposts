@@ -21,10 +21,4 @@ class FavoritesController extends Controller
         // 前のURLへリダイレクトさせる
         return back();
     }
-    
-    public function favorites($id)
-    {
-        
-        
-    }
 }

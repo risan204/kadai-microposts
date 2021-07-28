@@ -142,17 +142,15 @@ class User extends Authenticatable
     //このユーザーがお気に入り登録した投稿。（Micropostモデルとの関係を定義）  要確認
     public function favorites()
     {
-        return $this->hasMany(Micropost::class,favorite,follow_id,user_id)->withTimestamps();;
+        return $this->belongsToMany(Micropost::class,'favorites','user_id','micropost_id')->withTimestamps();
     }
     
     public function favorite($micropostId)
     {
         //すでにお気に入りしているかの確認
         $exist = $this->is_favorite($micropostId);
-        //対象が自分自身かどうか
-        $its_me = $this->id ==$micropostId;
         
-        if($exist || $its_me) {
+        if($exist) {
             //すでにお気に入りしていれば何もしない
             return false;
         } else {
@@ -165,10 +163,8 @@ class User extends Authenticatable
     public function unfavorite($micropostId){
         //すでにフォローしているかの確認
         $exist = $this->is_favorite($micropostId);
-        //対象が自分自身かどうかの確認
-        $its_me =$this->id == $micropostId;
         
-        if($exist && $its_me){
+        if($exist){
             //すでにお気に入りしていれば外す
             $this->favorites()->detach($micropostId);
             return true;
@@ -181,6 +177,6 @@ class User extends Authenticatable
     public function is_favorite($micropostId)
     {
         //お気に入りしている投稿の中に$micropostIdが存在するか
-        return $this->favorites()->where($micropostId)->exists();
+        return $this->favorites()->where('micropost_id', $micropostId)->exists();
     }
 }
